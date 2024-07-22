@@ -1,0 +1,10 @@
+<ion-item style="--background: #100f31">
+  <ion-thumbnail slot="start" *ngIf="anime.downloadURL != null">
+    <img alt="Poster of {{anime.nome}}" src="{{anime.downloadURL}}" />
+  </ion-thumbnail>
+  <ion-thumbnail slot="start" *ngIf="anime.downloadURL == null">
+    <img alt="Poster not found" src="assets/notfound.jpg" />
+  </ion-thumbnail>
+  <ion-label color="light" class="nome">{{anime.nome}}</ion-label>
+  <ion-label color="light" class="episodios">{{anime.episodios}}</ion-label>
+</ion-item>

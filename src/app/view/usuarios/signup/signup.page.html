@@ -1,0 +1,53 @@
+<ion-content class="ion-padding login-content">
+  <div class="login-container">
+    <form [formGroup]="formCadastrar" (ngSubmit)="submitForm()">
+      <!-- Título de Cadastro -->
+      <h1 class="login-title">Sign up</h1>
+
+      <!-- Input de Email -->
+      <div class="input-container">
+        <ion-icon name="mail-outline" class="input-icon"></ion-icon>
+        <ion-input type="email" formControlName="email" placeholder="Email" class="input-field"></ion-input>
+      </div>
+      
+      <!-- Mensagens de Erro Email -->
+      <div *ngIf="formCadastrar.get('email')?.touched && formCadastrar.get('email')?.invalid" class="error-message">
+        <span *ngIf="formCadastrar.get('email')?.errors?.['required']">Email é obrigatório.</span>
+        <span *ngIf="formCadastrar.get('email')?.errors?.['email']">Formato de email inválido.</span>
+      </div>
+      
+      <!-- Input de Senha -->
+      <div class="input-container">
+        <ion-icon name="lock-closed-outline" class="input-icon"></ion-icon>
+        <ion-input type="password" formControlName="senha" placeholder="Password" class="input-field"></ion-input>
+      </div>
+      
+      <!-- Mensagens de Erro Senha -->
+      <div *ngIf="formCadastrar.get('senha')?.touched && formCadastrar.get('senha')?.invalid" class="error-message">
+        <span *ngIf="formCadastrar.get('senha')?.errors?.['required']">Senha é obrigatória.</span>
+        <span *ngIf="formCadastrar.get('senha')?.errors?.['minlength']">Senha precisa de no mínimo 6 caracteres.</span>
+      </div>
+      
+      <!-- Input de Confirmação de Senha -->
+      <div class="input-container">
+        <ion-icon name="lock-closed-outline" class="input-icon"></ion-icon>
+        <ion-input type="password" formControlName="confSenha" placeholder="Confirm Password" class="input-field"></ion-input>
+      </div>
+      
+      <!-- Mensagens de Erro Confirmação de Senha -->
+      <div *ngIf="formCadastrar.get('confSenha')?.touched && formCadastrar.get('confSenha')?.invalid" class="error-message">
+        <span *ngIf="formCadastrar.get('confSenha')?.errors?.['required']">Confirmação de senha é obrigatória.</span>
+        <span *ngIf="formCadastrar.get('confSenha')?.errors?.['minlength']">Confirmação de senha precisa de no mínimo 6 caracteres.</span>
+        <span *ngIf="formCadastrar.get('confSenha')?.dirty && formCadastrar.get('confSenha')?.value != formCadastrar.get('senha')?.value">Senhas não coincidem.</span>
+      </div>
+      
+      <!-- Botão de Cadastro -->
+      <ion-button expand="block" color="light" type="submit" class="login-button">Sign up</ion-button>
+      
+      <!-- Link para Login -->
+      <p class="register-link">
+        Already have an account? <a (click)="irParaSignIn()">Sign in</a>
+      </p>
+    </form>
+  </div>
+</ion-content>

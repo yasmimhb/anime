@@ -1,0 +1,141 @@
+/* Ajustar a cor de fundo */
+.login-content {
+    --background: linear-gradient(to bottom,#04010c, #0d0525);
+  }
+  
+  /* Ajustar o título "Sign in" no centro */
+  .login-title {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 36px;
+    font-weight: bold;
+    color: #ffffff;
+  }
+  .input-container {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #ffffff;
+    margin-bottom: 20px;
+    width: 100%;
+    background: transparent;
+    color: #ffffff;
+
+  }
+  .input-icon {
+    color: #ffffff;
+    margin-right: 10px;
+  }
+
+
+
+  
+  /* Estilização geral do container de login */
+  .login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 20px;
+  }
+  
+  /* Estilização dos campos de entrada */
+  .input-container {
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 20px;
+  }
+  
+  .custom-item {
+    width: 100%;
+    background: transparent;
+    border-bottom: 2px solid #fff;
+    margin-bottom: 10px;
+    padding: 10px;
+  }
+  
+  .input-icon {
+    color: #fff;
+    font-size: 24px;
+  }
+  
+  
+  /* Mensagens de erro */
+  .error-message {
+    color: #ff4d4d;
+    font-size: 14px;
+    margin-top: 5px;
+  }
+  
+  /* Estilização do texto divisor */
+  .or-divider {
+    text-align: center;
+    margin: 20px 0;
+    color: #fff;
+    width: 100%;
+    font-size: 18px;
+  }
+  
+  /* Estilização dos botões de login social */
+  .social-login-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .social-icon {
+    font-size: 40px;
+  }
+  
+  /* Estilização do link de registro */
+  .register-link {
+    text-align: center;
+    margin-top: 30px;
+    color: #fff;
+    font-size: 18px;
+  }
+  
+  .register-link a {
+    color: #00ff00;
+    text-decoration: none;
+  }
+  
+  .register-link a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Estilização do botão de login */
+  ion-button.login-button {
+    --background: #fff;
+    color: #000;
+    --border-radius: 20px;
+    margin-bottom: 20px;
+    width: 100%;
+    max-width: 400px;
+    height: 50px;
+    font-size: 20px;
+    --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Estilização dos botões sociais */
+  ion-button {
+    --border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    --box-shadow: none;
+    background: transparent;
+  }
+  
+  ion-button[fill="clear"] {
+    color: #fff;
+  }
+  
+  /* Fonte personalizada */
+  @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+  
+  body {
+    font-family: 'Roboto', sans-serif;
+  }
+  
+  
+  

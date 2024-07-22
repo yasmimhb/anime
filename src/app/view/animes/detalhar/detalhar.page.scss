@@ -1,0 +1,20 @@
+.home-content {
+    --background: linear-gradient(to bottom, #04010c, #0d0525);
+  }
+  
+  .header {
+    --background: linear-gradient(to bottom, #04010c, #0d0525); 
+  }
+  
+  ion-toolbar {
+    --background: linear-gradient(to bottom, #04010c, #04010c); 
+  }
+
+  ion-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 20px;
+    --color: rgb(255, 0, 0);
+}

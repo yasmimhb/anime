@@ -1,0 +1,66 @@
+<ion-content class="ion-padding home-content">
+  <div class="form-container">
+    <h1 class="login-title">{{ editar ? 'Edit' : 'Register' }}</h1>
+    <div class="form-field image-upload" [ngClass]="{'has-image': imageUrl}">
+      <input type="file" #fileInput accept="image/*" (change)="cadastrarImagem($event)" hidden />
+      <div class="image-container" *ngIf="imageUrl; else uploadButton">
+        <img [src]="imageUrl" alt="Uploaded Image" class="uploaded-image" (click)="fileInput.click()"/>
+      </div>
+      <ng-template #uploadButton>
+        <ion-button color="light" expand="block" shape="round" (click)="fileInput.click()">
+          <ion-icon name="camera"></ion-icon>
+        </ion-button>
+      </ng-template>
+    </div>
+
+    <form [formGroup]="formEntidade" (ngSubmit)="cadastrar()">
+      <div class="form-field">
+        <ion-item>
+          <ion-input placeholder="Anime Name" formControlName="nome"></ion-input>
+        </ion-item>
+      </div>
+      <div class="form-field">
+        <ion-item>
+          <ion-input placeholder="Episodes" type="number" formControlName="episodios"></ion-input>
+        </ion-item>
+      </div>
+      <div class="form-field">
+        <ion-item>
+          <ion-select placeholder="Genre" formControlName="genero">
+            <ion-select-option value="0">Other</ion-select-option>
+            <ion-select-option value="1">Shounen</ion-select-option>
+            <ion-select-option value="2">Romance</ion-select-option>
+            <ion-select-option value="3">Drama</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </div>
+      <div class="form-field">
+        <ion-item>
+          <ion-select placeholder="Season" formControlName="temporada">
+            <ion-select-option value="0">Year-round</ion-select-option>
+            <ion-select-option value="1">Summer</ion-select-option>
+            <ion-select-option value="2">Autumn</ion-select-option>
+            <ion-select-option value="3">Winter</ion-select-option>
+            <ion-select-option value="4">Spring</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </div>
+      <div class="form-field">
+        <ion-item>
+          <ion-input placeholder="Studio" formControlName="studio"></ion-input>
+        </ion-item>
+      </div>
+      <div class="form-field">
+        <ion-item>
+          <ion-input placeholder="Enter the release date" type="date" formControlName="data"></ion-input>
+        </ion-item>
+      </div>
+      
+      <div class="button-group">
+        <ion-button expand="block" shape="round" color="medium" (click)="cancelar()">Cancel</ion-button>
+        <ion-button expand="block" shape="round" type="submit" class="save-button">Save</ion-button>
+        <ion-button *ngIf="editar" expand="block" shape="round" color="danger" (click)="excluir()">Excluir</ion-button>
+      </div>
+    </form>
+  </div>
+</ion-content>

@@ -1,0 +1,53 @@
+<ion-content class="ion-padding login-content">
+  <div class="login-container">
+    <form [formGroup]="formLogar" (ngSubmit)="submitForm()">
+      <!-- Título de Login -->
+      <h1 class="login-title">Sign in</h1>
+      
+      <!-- Input de Email -->
+      <div class="input-container">
+        <ion-icon name="mail-outline" class="input-icon"></ion-icon>
+        <ion-input type="email" formControlName="email" placeholder="Email" class="input-field"></ion-input>
+      </div>
+      
+      <!-- Mensagens de Erro Email -->
+      <div *ngIf="formLogar.get('email')?.touched && formLogar.get('email')?.invalid" class="error-message">
+        <span *ngIf="formLogar.get('email')?.errors?.['required']">Email é obrigatório.</span>
+        <span *ngIf="formLogar.get('email')?.errors?.['email']">Formato de email inválido.</span>
+      </div>
+     
+      <!-- Input de Senha -->
+      <div class="input-container">
+        <ion-icon name="lock-closed-outline" class="input-icon"></ion-icon>
+        <ion-input type="password" formControlName="senha" placeholder="Password" class="input-field"></ion-input>
+      </div>
+      
+      <!-- Mensagens de Erro Senha -->
+      <div *ngIf="formLogar.get('senha')?.touched && formLogar.get('senha')?.invalid" class="error-message">
+        <span *ngIf="formLogar.get('senha')?.errors?.['required']">Senha é obrigatória.</span>
+        <span *ngIf="formLogar.get('senha')?.errors?.['minlength']">Senha precisa de no mínimo 6 caracteres.</span>
+      </div>
+      
+      <!-- Botão de Login -->
+      <ion-button expand="block" color="light" type="submit" class="login-button">Login</ion-button>
+      
+      <!-- Divisor "Or login with" -->
+      <div class="or-divider">Or login with</div>
+      
+      <!-- Botões de Login Social -->
+      <div class="social-login-buttons">
+        <ion-button fill="clear" (click)="logarComGoogle()">
+          <ion-icon slot="icon-only" name="logo-google" class="social-icon"></ion-icon>
+        </ion-button>
+        <ion-button fill="clear" (click)="logarComGithub()">
+          <ion-icon slot="icon-only" name="logo-github" class="social-icon"></ion-icon>
+        </ion-button>
+      </div>
+      
+      <!-- Link para Registro -->
+      <p class="register-link">
+        Don't have account? <a (click)="irParaSignUp()">Sign up</a>
+      </p>
+    </form>
+  </div>
+</ion-content>

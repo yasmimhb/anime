@@ -1,0 +1,44 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      My Anime List
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding home-content">
+  <app-loading-animes *ngIf="isLoading"></app-loading-animes>
+
+  <div class="empty-state-container" *ngIf="lista_animes.length === 0">
+    <ion-icon name="sad-outline" class="empty-state-icon"></ion-icon>
+    <p class="empty-state-text">Nenhum anime encontrado.</p>
+  </div>
+
+  <ion-item-group *ngIf="lista_animes.length > 0">
+    <ion-searchbar #mySearchbar animated debounce="800" class="search-bar" (ionChange)="onSearchChange($event)"></ion-searchbar>
+    <ion-list>
+      <app-anime *ngFor="let anime of lista_animes" (click)="editar(anime)" [anime]="anime"></app-anime>
+    </ion-list>
+  </ion-item-group>
+
+  <ion-item-group *ngIf="hasSearched">
+    <ion-icon name="arrow-back-outline" class="back-icon" (click)="returnSearch()"></ion-icon>
+    <ion-searchbar animated debounce="800" #searchInput (ionChange)="onSearchChange($event)" class="search-bar"></ion-searchbar>
+    <div class="empty-state-container" *ngIf="!isLoading && (animes?.length === 0 || query?.length === 0)">
+      <ion-icon name="sad-outline" class="empty-state-icon"></ion-icon>
+      <p class="empty-state-text">Nenhum anime encontrado.</p>
+    </div>
+    <ion-list>
+      <app-anime *ngFor="let anime of animes" (click)="editar(anime)" [anime]="anime"></app-anime>
+    </ion-list>
+  </ion-item-group>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="irParaCadastrar()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-button (click)="logout()">
+      <ion-icon name="log-out-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
