@@ -24,7 +24,7 @@ export class CadastrarPage implements OnInit {
     genero: '',
     temporada: '',
     studio: '',
-    data: ''
+    data: '',
   };
 
   constructor(
@@ -52,6 +52,12 @@ export class CadastrarPage implements OnInit {
 
   ngOnInit() {
     this.isInEditarPage = false;
+  }
+
+  cancelar() {
+    this.formEntidade.reset();
+    this.imagem = null; 
+    this.router.navigate(['/home']);
   }
 
   cadastrarImagem(imagem: any) {
