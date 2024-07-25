@@ -1,6 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import {  Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { UtilService } from 'src/app/common/util.service';
 import { Anime } from 'src/app/model/entities/Anime';
@@ -12,45 +12,41 @@ import { FirebaseService } from 'src/app/model/services/firebase.service';
   templateUrl: './cadastrar.page.html',
   styleUrls: ['./cadastrar.page.scss'],
 })
-export class CadastrarPage  implements OnInit {
-  isInEditarPage : Boolean = false;
+export class CadastrarPage implements OnInit {
+  isInEditarPage: boolean = false;
   anime!: Anime;
-  nome!: string;
-  episodios! : number;
-  genero! : number;
-  temporada! : number;
-  studio! : string;
-  data! : number;
-  public imagem! : any;
-  public user! : any;
-  formEntidade : FormGroup;
-  model: any = {nome: '',
-  episodios: '',
-  genero: '',
-  temporada: '',
-  studio: '',
-  data: ''};
-
-  constructor(private alertController: AlertController, private router : Router, private firebaseService : FirebaseService, private auth: AuthService, private formBuilder: FormBuilder, private utilService: UtilService) {
-    this.isInEditarPage = false;
-    this.user = this.auth.getUserLogged();
-    this.formEntidade = new FormGroup({
-      nome: new FormControl,
-      episodios: new FormControl,
-      genero: new FormControl,
-      temporada: new FormControl,
-      studio: new FormControl,
-      data: new FormControl
-    })
-    this.model = {nome: '',
+  public imagem!: any;
+  public user: any;
+  formEntidade: FormGroup;
+  model: any = {
+    nome: '',
     episodios: '',
     genero: '',
     temporada: '',
     studio: '',
-    data: ''};
+    data: ''
+  };
+
+  constructor(
+    private alertController: AlertController,
+    private router: Router,
+    private firebaseService: FirebaseService,
+    private auth: AuthService,
+    private formBuilder: FormBuilder,
+    private utilService: UtilService
+  ) {
+    this.user = this.auth.getUserLogged();
+    this.formEntidade = this.formBuilder.group({
+      nome: ['', Validators.required],
+      episodios: ['', [Validators.required, Validators.min(1)]],
+      genero: ['', Validators.required],
+      temporada: [''],
+      studio: [''],
+      data: ['']
+    });
   }
 
-  get errorControl(){
+  get errorControl() {
     return this.formEntidade.controls;
   }
 
@@ -58,52 +54,51 @@ export class CadastrarPage  implements OnInit {
     this.isInEditarPage = false;
   }
 
-  cadastrarImagem(imagem: any){
+  cadastrarImagem(imagem: any) {
     this.imagem = imagem.files;
   }
 
-  cadastrar(){
-    if(!this.formEntidade.valid){
-      //this.nome || !this.episodios || !this.genero
-      if(this.formEntidade.value['nome'] == ""){
-        this.utilService.presentAlert("Erro.", "Nome não pode estar vázio");
-      }
-      else if(this.formEntidade.value['episodios'] <= 0){
-        this.utilService.presentAlert("Erro.", "Episódios não pode ser 0 ou negativo.");
-      }
-      else if(this.formEntidade.value['genero'] == null){
-        this.utilService.presentAlert("Erro.", "Gênero não pode estar vazio.");
-      }
-    } 
-    else{
-      this.utilService.simpleLoader();
-      console.log("cadstrou eh");
-      let novo : Anime = new Anime(this.formEntidade.value['nome'], this.formEntidade.value['episodios'], this.formEntidade.value['genero']);
+  cadastrar() {
+    if (this.formEntidade.valid) {
+      let novo: Anime = new Anime(
+        this.formEntidade.value['nome'],
+        this.formEntidade.value['episodios'],
+        this.formEntidade.value['genero']
+      );
       novo.uid = this.user.uid;
       novo.temporada = this.formEntidade.value['temporada'];
-      novo.studio = this.formEntidade.value['studio']
-      novo.data = this.formEntidade.value['data']
-      if(this.imagem){
-        console.log(this.imagem);
-        console.log("Ola tou cadastrando com imagem");
-        this.firebaseService.cadastrarCapa(this.imagem, novo).then(() => {
-          this.utilService.dismissLoader();
-        })
-        .catch(error => {
-          console.error(error);
-        });
-        console.log("Terminei de cadastrar com imagem");
-      }else{
-        this.firebaseService.cadastrar(novo).then(() => {
-          this.utilService.dismissLoader();
-        })
-        .catch(error => {
-          console.error(error);
-        });
+      novo.studio = this.formEntidade.value['studio'];
+      novo.data = this.formEntidade.value['data'];
+
+      this.utilService.simpleLoader();
+
+      const onSuccess = () => {
+        this.utilService.dismissLoader();
+        this.utilService.presentAlert("Sucesso", "Anime Cadastrado!");
+        this.router.navigate(['/home']);
+      };
+
+      const onError = (error: any) => {
+        console.error("Erro ao cadastrar anime: ", error);
+        this.utilService.dismissLoader();
+        this.utilService.presentAlert("Erro", "Falha ao cadastrar!");
+      };
+
+      if (this.imagem) {
+        this.firebaseService.cadastrarCapa(this.imagem, novo)
+          .then(onSuccess)
+          .catch(error => {
+            console.error("Erro ao cadastrar com imagem: ", error);
+            this.utilService.dismissLoader();
+            this.utilService.presentAlert("Erro", "Falha ao cadastrar com imagem!");
+          });
+      } else {
+        this.firebaseService.cadastrar(novo)
+          .then(onSuccess)
+          .catch(onError);
       }
-      this.utilService.presentAlert("Sucesso", "Anime Cadastrado!");
-      this.router.navigate(['/home']);
+    } else {
+      this.utilService.presentAlert("Erro", "Nome, Episódios e Gênero são obrigatórios!");
     }
   }
-
 }

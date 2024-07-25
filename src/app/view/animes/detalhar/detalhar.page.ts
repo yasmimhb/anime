@@ -79,49 +79,47 @@ export class DetalharPage implements OnInit {
     this.imagem = imagem.files;
   }
 
-  cadastrar(){
-    if(!this.formEntidade.valid){
-      //this.nome || !this.episodios || !this.genero
-      if(this.formEntidade.value['nome'] == ""){
-        this.utilService.presentAlert("Erro.", "Nome não pode estar vázio");
-      }
-      else if(this.formEntidade.value['episodios'] <= 0){
-        this.utilService.presentAlert("Erro.", "Episódios não pode ser 0 ou negativo.");
-      }
-      else if(this.formEntidade.value['genero'] == null){
-        this.utilService.presentAlert("Erro.", "Gênero não pode estar vazio.");
-      }
-    } 
-    else{
-      this.utilService.simpleLoader();
-      console.log("cadstrou eh");
-      let novo : Anime = new Anime(this.formEntidade.value['nome'], this.formEntidade.value['episodios'], this.formEntidade.value['genero']);
-      novo.id = this.anime.id;
+  cadastrar() {
+    if (this.formEntidade.valid) {
+      let novo: Anime = new Anime(
+        this.formEntidade.value['nome'],
+        this.formEntidade.value['episodios'],
+        this.formEntidade.value['genero']
+      );
       novo.uid = this.user.uid;
       novo.temporada = this.formEntidade.value['temporada'];
-      novo.studio = this.formEntidade.value['studio']
-      novo.data = this.formEntidade.value['data']
-      if(this.imagem){
-        console.log(this.imagem);
-        console.log("Ola tou cadastrando com imagem");
-        this.firebaseService.cadastrarCapa(this.imagem, novo).then(() => {
-          this.utilService.dismissLoader();
-        })
-        .catch(error => {
-          console.error(error);
-        });
-        console.log("Terminei de cadastrar com imagem");
-      }else{
-        this.firebaseService.editarAnime(novo, this.anime.id).then(() => {
-          this.utilService.dismissLoader();
-        })
-        .catch(error => {
-          console.error(error);
-        });
+      novo.studio = this.formEntidade.value['studio'];
+      novo.data = this.formEntidade.value['data'];
+
+      this.utilService.simpleLoader();
+
+      const onSuccess = () => {
+        this.utilService.dismissLoader();
+        this.utilService.presentAlert("Sucesso", "Anime Editado!");
+        this.router.navigate(['/home']);
+      };
+
+      const onError = (error: any) => {
+        console.error("Erro ao editar anime: ", error);
+        this.utilService.dismissLoader();
+        this.utilService.presentAlert("Erro", "Falha ao editar!");
+      };
+
+      if (this.imagem) {
+        this.firebaseService.cadastrarCapa(this.imagem, novo)
+          .then(onSuccess)
+          .catch(error => {
+            console.error("Erro ao editar com imagem: ", error);
+            this.utilService.dismissLoader();
+            this.utilService.presentAlert("Erro", "Falha ao editar com imagem!");
+          });
+      } else {
+        this.firebaseService.cadastrar(novo)
+          .then(onSuccess)
+          .catch(onError);
       }
-      this.utilService.presentAlert("Sucesso", "Anime Editado!");
-      this.router.navigate(['/home']);
+    } else {
+      this.utilService.presentAlert("Erro", "Nome, Episódios e Gênero são obrigatórios!");
     }
   }
-
 }

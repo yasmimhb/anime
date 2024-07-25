@@ -1,11 +1,146 @@
 .home-content {
-    --background: linear-gradient(to bottom, #04010c, #0d0525);
-  }
-  
-  .header {
-    --background: linear-gradient(to bottom, #04010c, #0d0525); 
-  }
-  
-  ion-toolbar {
-    --background: linear-gradient(to bottom, #04010c, #04010c); 
-  }
+  --background: linear-gradient(to bottom,#04010c, #0d0525);
+}
+
+.header {
+  --background: linear-gradient(to bottom, #04010c, #0d0525); 
+}
+
+ion-toolbar {
+  --background: linear-gradient(to bottom, #04010c, #04010c); 
+}
+
+
+.login-title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 36px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  padding: 50px;
+}
+
+.form-container {
+  width: 90%;
+  max-width: 400px;
+  margin: auto;
+  padding: 0px;
+  background-color: transparent;
+  border-radius: 0px;
+  text-align: center;
+}
+
+.form-field {
+  background-color: #100f31;
+  border-radius: 100px;
+  padding: 0px;
+  margin-bottom: 0px;
+}
+
+ion-item {
+  --background: transparent;
+  --border-color: transparent;
+  color: #ffffff;
+  border-bottom: 1px solid transparent;
+  margin-bottom: 20px;
+}
+
+
+ion-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 20px;
+  --color: black;
+}
+
+.save-button {
+  --background: #ffffff;
+}
+
+.file-input-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  border-radius: 5px;
+  color: #ffffff;
+  padding: 10px;
+}
+
+
+
+.file-input-button ion-icon {
+  margin-right: 10px;
+}
+
+.file-input-button input[type="file"] {
+  display: none;
+}
+
+
+
+ion-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 20px;
+  --color: rgb(255, 255, 255);
+}
+
+
+.save-button {
+  --background: #ffffff96;
+}
+
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+}
+
+
+.image-upload {
+position: relative;
+display: flex;
+justify-content: center;
+align-items: center;
+width: 100%;
+height: 150px;
+margin-bottom: 20px;
+border-radius: 10px;
+}
+
+
+.image-upload ion-button {
+width: 100px;
+height: 100px;
+}
+
+.image-upload ion-icon {
+font-size: 40px;
+}
+
+.image-container {
+width: 100%;
+height: 100%;
+display: flex;
+justify-content: center;
+align-items: center;
+}
+
+.uploaded-image {
+max-width: 100%;
+max-height: 100%;
+object-fit: contain;
+border-radius: 10px;
+}
