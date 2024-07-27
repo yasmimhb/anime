@@ -15,7 +15,7 @@ import { FirebaseService } from 'src/app/model/services/firebase.service';
 export class CadastrarPage implements OnInit {
   isInEditarPage: boolean = false;
   anime!: Anime;
-  public imagem!: any;
+  public imagem: any;
   public user: any;
   formEntidade: FormGroup;
   model: any = {
@@ -56,12 +56,12 @@ export class CadastrarPage implements OnInit {
 
   cancelar() {
     this.formEntidade.reset();
-    this.imagem = null; 
+    this.imagem = null;
     this.router.navigate(['/home']);
   }
 
-  cadastrarImagem(imagem: any) {
-    this.imagem = imagem.files;
+  cadastrarImagem(event: any) {
+    this.imagem = event.files;
   }
 
   cadastrar() {

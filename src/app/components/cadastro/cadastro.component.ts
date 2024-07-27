@@ -23,7 +23,8 @@ export class CadastroComponent implements OnInit {
   @Input() editar: Boolean;
   @Input() anime: any;
   public user!: any;
-  imageUrl: string | ArrayBuffer | null = null;
+  public imageUrl: string | ArrayBuffer | null = null; // Definição local da imageUrl
+  public imagem: any; // Para armazenar o arquivo de imagem
 
   constructor(private formBuilder: FormBuilder, private auth: AuthService, private router: Router, private utilService: UtilService, private firebaseService: FirebaseService) {
     this.user = this.auth.getUserLogged();
@@ -35,13 +36,14 @@ export class CadastroComponent implements OnInit {
     }
   }
   
-  excluir(){
+  excluir() {
     this.utilService.presentConfirmAlert("Atenção!", "Realmente deseja excluir?");
   }
 
   cadastrarImagem(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
+      this.imagem = input.files; // Armazena o arquivo de imagem
       const reader = new FileReader();
       reader.onload = () => {
         this.imageUrl = reader.result;

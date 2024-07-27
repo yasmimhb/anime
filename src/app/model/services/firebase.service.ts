@@ -36,7 +36,7 @@ export class FirebaseService {
       data: anime.data || null,
       downloadURL: anime.downloadURL || null, 
       uid: anime.uid});
-  }
+  }  
 
   editarAnime(anime: Anime, id: string){
     return this.angularFirestore.collection(this.PATH).doc(id)
@@ -71,34 +71,31 @@ export class FirebaseService {
     .delete()
   }
 
-  cadastrarCapa(imagem: any, anime: Anime){
+  cadastrarCapa(imagem: any, anime: Anime) {
     return new Promise((resolve, reject) => {
-      console.log("Imagem.itme não eh uma funcao???")
       const file = imagem.item(0);
-      console.log("Não chegou aqui");
-      if(file.type.split('/')[0] != 'image'){
-        console.error('Tipo não Suporrtado!');
+      if (file.type.split('/')[0] !== 'image') {
+        console.error('Tipo não suportado!');
+        reject('Tipo não suportado!');
         return;
       }
       const path = `images/${anime.nome}_${file.name}`;
       const fileRef = this.storage.ref(path);
-      let task = this.storage.upload(path, file);
-      task.snapshotChanges().pipe(finalize(()=>{
-        let uploadFileURL = fileRef.getDownloadURL();
-        uploadFileURL.subscribe(resp => {
-          anime.downloadURL = resp;
-          if(!anime.id){
-            this.cadastrarComCapa(anime);
-          }else{
-            this.editarComCapa(anime, anime.id);
-          }
-          resolve(resp);
-        },
-        error => {
-          reject(error); 
-        }
-        );
-      })).subscribe();
+      const task = this.storage.upload(path, file);
+      task.snapshotChanges().pipe(
+        finalize(() => {
+          fileRef.getDownloadURL().subscribe(resp => {
+            anime.downloadURL = resp;
+            if (!anime.id) {
+              this.cadastrarComCapa(anime).then(resolve).catch(reject);
+            } else {
+              this.editarComCapa(anime, anime.id).then(resolve).catch(reject);
+            }
+          }, error => {
+            reject(error);
+          });
+        })
+      ).subscribe();
     });
   }
 }	
