@@ -18,14 +18,7 @@ export class HomePage {
   isLoading: boolean = false;
   hasSearched: boolean = false;
   query: any;
-  model: any = {
-    icon: 'close-outline',
-    title: 'Nenhum anime cadastrado.'
-  };
-  emptySearchModel: any = {
-    icon: 'search-outline',
-    title: 'Nenhum anime encontrado.'
-  };
+
 
   constructor(private router: Router, private firebaseService: FirebaseService, private AuthSerivce: AuthService) {
     this.isLoading = true;

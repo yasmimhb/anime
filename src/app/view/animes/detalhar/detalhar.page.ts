@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import {  Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { UtilService } from 'src/app/common/util.service';
 import { Anime } from 'src/app/model/entities/Anime';
@@ -16,18 +16,18 @@ export class DetalharPage implements OnInit {
   isInEditarPage: boolean = true;
   anime!: Anime;
   nome!: string;
-  episodios! : number;
-  genero! : number;
-  temporada! : number;
-  studio! : string;
-  data! : number;
+  episodios!: number;
+  genero!: number;
+  temporada!: number;
+  studio!: string;
+  data!: number;
   edicao: boolean = false;
-  public imagem! : any;
-  public user! : any;
-  formEntidade : FormGroup;
+  public imagem!: any;
+  public user!: any;
+  formEntidade: FormGroup;
   model: any = {};
 
-  constructor(private alertController: AlertController, private router : Router, private firebaseService : FirebaseService, private auth: AuthService, private formBuilder: FormBuilder, private utilService: UtilService) {
+  constructor(private alertController: AlertController, private router: Router, private firebaseService: FirebaseService, private auth: AuthService, private formBuilder: FormBuilder, private utilService: UtilService) {
     this.user = this.auth.getUserLogged();
     this.formEntidade = new FormGroup({
       nome: new FormControl,
@@ -39,13 +39,14 @@ export class DetalharPage implements OnInit {
     })
   }
 
-  get errorControl(){
+  get errorControl() {
     return this.formEntidade.controls;
   }
 
   ngOnInit() {
     this.anime = history.state.anime;
-    this.model = {nome: this.anime.nome,
+    this.model = {
+      nome: this.anime.nome,
       episodios: this.anime.episodios,
       genero: this.anime.genero,
       temporada: this.anime.temporada,
@@ -64,34 +65,24 @@ export class DetalharPage implements OnInit {
     })
   }
 
-  habilitarEdicao(){
-    if(this.edicao)
-      this.edicao = false;
-    else
-      this.edicao = true;
-  }
-
-  excluir(){
+  excluir() {
     this.utilService.presentConfirmAlert("Atenção!", "Realmente deseja excluir?");
   }
 
-  cadastrarImagem(imagem: any){
+  cadastrarImagem(imagem: any) {
     this.imagem = imagem.files;
   }
 
   cadastrar() {
     if (this.formEntidade.valid) {
-      let novo: Anime = new Anime(
-        this.formEntidade.value['nome'],
-        this.formEntidade.value['episodios'],
-        this.formEntidade.value['genero']
-      );
-      novo.uid = this.user.uid;
-      novo.temporada = this.formEntidade.value['temporada'];
-      novo.studio = this.formEntidade.value['studio'];
-      novo.data = this.formEntidade.value['data'];
-
       this.utilService.simpleLoader();
+      
+      this.anime.nome = this.formEntidade.value['nome'];
+      this.anime.episodios = this.formEntidade.value['episodios'];
+      this.anime.genero = this.formEntidade.value['genero'];
+      this.anime.temporada = this.formEntidade.value['temporada'];
+      this.anime.studio = this.formEntidade.value['studio'];
+      this.anime.data = this.formEntidade.value['data'];
 
       const onSuccess = () => {
         this.utilService.dismissLoader();
@@ -100,13 +91,13 @@ export class DetalharPage implements OnInit {
       };
 
       const onError = (error: any) => {
-        console.error("Erro ao editar anime: ", error);
+        console.error("Erro ao editar anime:", error);
         this.utilService.dismissLoader();
         this.utilService.presentAlert("Erro", "Falha ao editar!");
       };
 
       if (this.imagem) {
-        this.firebaseService.cadastrarCapa(this.imagem, novo)
+        this.firebaseService.cadastrarCapa(this.imagem, this.anime)
           .then(onSuccess)
           .catch(error => {
             console.error("Erro ao editar com imagem: ", error);
@@ -114,7 +105,8 @@ export class DetalharPage implements OnInit {
             this.utilService.presentAlert("Erro", "Falha ao editar com imagem!");
           });
       } else {
-        this.firebaseService.cadastrar(novo)
+        console.log("Tentando atualizar o anime:", this.anime); // Log adicional
+        this.firebaseService.editarAnime(this.anime, this.anime.id)
           .then(onSuccess)
           .catch(onError);
       }
