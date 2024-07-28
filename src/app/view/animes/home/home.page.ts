@@ -67,9 +67,4 @@ export class HomePage {
       }, 3000);
     }
   }
-
-  returnSearch() {
-    this.hasSearched = false;
-    this.searchbar.value = null;
-  }
 }

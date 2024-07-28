@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild, forwardRef } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, forwardRef, SimpleChanges, OnChanges } from '@angular/core';
 import { FormBuilder, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UtilService } from 'src/app/common/util.service';
@@ -15,7 +15,7 @@ import { FirebaseService } from 'src/app/model/services/firebase.service';
     useExisting: forwardRef(() => CadastroComponent)
   }]
 })
-export class CadastroComponent implements OnInit {
+export class CadastroComponent implements OnInit, OnChanges {
   @ViewChild('fileInput') fileInput;
   @Input() formEntidade: FormGroup;
   @Input() onSubmit: () => void;
@@ -23,11 +23,25 @@ export class CadastroComponent implements OnInit {
   @Input() editar: Boolean;
   @Input() anime: any;
   public user!: any;
-  public imageUrl: string | ArrayBuffer | null = null; // Definição local da imageUrl
-  public imagem: any; // Para armazenar o arquivo de imagem
+  public imageUrl: string | ArrayBuffer | null = null; 
+  public imagem: any; 
 
   constructor(private formBuilder: FormBuilder, private auth: AuthService, private router: Router, private utilService: UtilService, private firebaseService: FirebaseService) {
     this.user = this.auth.getUserLogged();
+  }
+
+  ngOnInit() {
+    if (this.anime && this.anime.imagemUrl) {
+      this.imageUrl = this.anime.imagemUrl;
+      console.log('Imagem URL no ngOnInit:', this.imageUrl);
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['anime'] && changes['anime'].currentValue && changes['anime'].currentValue.imagemUrl) {
+      this.imageUrl = changes['anime'].currentValue.imagemUrl;
+      console.log('Imagem URL no ngOnChanges:', this.imageUrl);
+    }
   }
 
   cadastrar() {
@@ -35,7 +49,7 @@ export class CadastroComponent implements OnInit {
       this.onSubmit();
     }
   }
-  
+
   excluir() {
     this.utilService.presentConfirmAlert("Atenção!", "Realmente deseja excluir?");
   }
@@ -43,7 +57,7 @@ export class CadastroComponent implements OnInit {
   cadastrarImagem(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
-      this.imagem = input.files; // Armazena o arquivo de imagem
+      this.imagem = input.files; 
       const reader = new FileReader();
       reader.onload = () => {
         this.imageUrl = reader.result;
@@ -61,6 +75,4 @@ export class CadastroComponent implements OnInit {
   onFileInputClick() {
     this.fileInput.nativeElement.click();
   }
-
-  ngOnInit() {}
 }

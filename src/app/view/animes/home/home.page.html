@@ -11,7 +11,7 @@
   <ion-spinner *ngIf="isLoading"></ion-spinner>
 
   <ion-item-group *ngIf="lista_animes.length > 0">
-    <ion-list>
+    <ion-list class="no-margin">
       <app-anime *ngFor="let anime of lista_animes" (click)="editar(anime)" [anime]="anime"></app-anime>
     </ion-list>
   </ion-item-group>

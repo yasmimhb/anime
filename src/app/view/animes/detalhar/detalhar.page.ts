@@ -15,28 +15,31 @@ import { FirebaseService } from 'src/app/model/services/firebase.service';
 export class DetalharPage implements OnInit {
   isInEditarPage: boolean = true;
   anime!: Anime;
-  nome!: string;
-  episodios!: number;
-  genero!: number;
-  temporada!: number;
-  studio!: string;
-  data!: number;
   edicao: boolean = false;
-  public imagem!: any;
-  public user!: any;
+  downloadURL!: string;
+  user: any;
   formEntidade: FormGroup;
   model: any = {};
+  imageUrl: string | ArrayBuffer | null = null; 
+  imagem: any;
 
-  constructor(private alertController: AlertController, private router: Router, private firebaseService: FirebaseService, private auth: AuthService, private formBuilder: FormBuilder, private utilService: UtilService) {
+  constructor(
+    private alertController: AlertController,
+    private router: Router,
+    private firebaseService: FirebaseService,
+    private auth: AuthService,
+    private formBuilder: FormBuilder,
+    private utilService: UtilService
+  ) {
     this.user = this.auth.getUserLogged();
-    this.formEntidade = new FormGroup({
-      nome: new FormControl,
-      episodios: new FormControl,
-      genero: new FormControl,
-      temporada: new FormControl,
-      studio: new FormControl,
-      data: new FormControl
-    })
+    this.formEntidade = this.formBuilder.group({
+      nome: new FormControl('', [Validators.required]),
+      episodios: new FormControl('', [Validators.required, Validators.min(1), Validators.pattern('^[0-9]+$')]),
+      genero: new FormControl('', [Validators.required]),
+      temporada: new FormControl(''),
+      studio: new FormControl(''),
+      data: new FormControl('')
+    });
   }
 
   get errorControl() {
@@ -44,71 +47,56 @@ export class DetalharPage implements OnInit {
   }
 
   ngOnInit() {
-    this.anime = history.state.anime;
-    this.model = {
-      nome: this.anime.nome,
-      episodios: this.anime.episodios,
-      genero: this.anime.genero,
-      temporada: this.anime.temporada,
-      studio: this.anime.studio,
-      data: this.anime.data
-    };
-    this.edicao = true;
-    console.log(this.anime);
-    this.formEntidade = this.formBuilder.group({
-      nome: [this.anime.nome, [Validators.required]],
-      episodios: [this.anime.episodios, [Validators.required, Validators.min(1), Validators.pattern('^[0-9]+$')]],
-      genero: [this.anime.genero, [Validators.required]],
-      temporada: [this.anime.temporada],
-      studio: [this.anime.studio],
-      data: [this.anime.data]
-    })
+    if (history.state.anime) {
+      this.anime = history.state.anime;
+      this.model = { ...this.anime };
+      this.edicao = true;
+
+      this.formEntidade.patchValue({
+        nome: this.anime.nome,
+        episodios: this.anime.episodios,
+        genero: this.anime.genero,
+        temporada: this.anime.temporada,
+        studio: this.anime.studio,
+        data: this.anime.data
+      });
+
+      this.downloadURL = this.anime.downloadURL;
+    }
   }
 
-  excluir() {
-    this.utilService.presentConfirmAlert("Atenção!", "Realmente deseja excluir?");
+  cadastrarImagem(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      this.imagem = input.files;
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imageUrl = reader.result;
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
   }
 
-  cadastrarImagem(imagem: any) {
-    this.imagem = imagem.files;
-  }
-
-  cadastrar() {
+  async cadastrar() {
     if (this.formEntidade.valid) {
       this.utilService.simpleLoader();
-      
-      this.anime.nome = this.formEntidade.value['nome'];
-      this.anime.episodios = this.formEntidade.value['episodios'];
-      this.anime.genero = this.formEntidade.value['genero'];
-      this.anime.temporada = this.formEntidade.value['temporada'];
-      this.anime.studio = this.formEntidade.value['studio'];
-      this.anime.data = this.formEntidade.value['data'];
 
-      const onSuccess = () => {
+      const novoAnime = { ...this.anime, ...this.formEntidade.value };
+
+      try {
+        if (this.imagem) {
+          await this.firebaseService.cadastrarCapa(this.imagem, novoAnime);
+        } else {
+          await this.firebaseService.cadastrar(novoAnime);
+        }
+
         this.utilService.dismissLoader();
         this.utilService.presentAlert("Sucesso", "Anime Editado!");
         this.router.navigate(['/home']);
-      };
-
-      const onError = (error: any) => {
+      } catch (error) {
         console.error("Erro ao editar anime:", error);
         this.utilService.dismissLoader();
         this.utilService.presentAlert("Erro", "Falha ao editar!");
-      };
-
-      if (this.imagem) {
-        this.firebaseService.cadastrarCapa(this.imagem, this.anime)
-          .then(onSuccess)
-          .catch(error => {
-            console.error("Erro ao editar com imagem: ", error);
-            this.utilService.dismissLoader();
-            this.utilService.presentAlert("Erro", "Falha ao editar com imagem!");
-          });
-      } else {
-        console.log("Tentando atualizar o anime:", this.anime); // Log adicional
-        this.firebaseService.editarAnime(this.anime, this.anime.id)
-          .then(onSuccess)
-          .catch(onError);
       }
     } else {
       this.utilService.presentAlert("Erro", "Nome, Episódios e Gênero são obrigatórios!");

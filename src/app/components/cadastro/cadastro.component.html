@@ -6,6 +6,8 @@
       <div class="image-container" *ngIf="imageUrl; else uploadButton">
         <img [src]="imageUrl" alt="Uploaded Image" class="uploaded-image" (click)="fileInput.click()"/>
       </div>
+    
+      
       <ng-template #uploadButton>
         <ion-button color="light" expand="block" shape="round" (click)="fileInput.click()">
           <ion-icon name="camera"></ion-icon>

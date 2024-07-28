@@ -40,12 +40,16 @@ ion-title {
 }
 
 ion-list {
-  ion-item {
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  }
+  padding: 0;
+}
+
+ion-list ion-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: none;
+  --inner-border-width: 0;
+  --inner-border-color: transparent;
 }
 
 ion-label {
