@@ -81,13 +81,13 @@ export class DetalharPage implements OnInit {
     if (this.formEntidade.valid) {
       this.utilService.simpleLoader();
 
-      const novoAnime = { ...this.anime, ...this.formEntidade.value };
+      const animeAtualizado = { ...this.anime, ...this.formEntidade.value };
 
       try {
         if (this.imagem) {
-          await this.firebaseService.cadastrarCapa(this.imagem, novoAnime);
+          await this.firebaseService.cadastrarCapa(this.imagem, animeAtualizado);
         } else {
-          await this.firebaseService.cadastrar(novoAnime);
+          await this.firebaseService.atualizarAnime(animeAtualizado);
         }
 
         this.utilService.dismissLoader();

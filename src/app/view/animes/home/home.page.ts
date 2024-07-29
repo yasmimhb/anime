@@ -36,6 +36,7 @@ export class HomePage {
       });
   }
 
+
   irParaCadastrar() {
     this.router.navigate(['/cadastrar']);
   }

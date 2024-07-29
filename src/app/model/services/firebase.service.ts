@@ -38,6 +38,10 @@ export class FirebaseService {
       uid: anime.uid});
   }  
 
+  atualizarAnime(anime: Anime): Promise<void> {
+    return this.angularFirestore.collection('animes').doc(anime.id).update(anime);
+  }
+
   editarAnime(anime: Anime, id: string){
     return this.angularFirestore.collection(this.PATH).doc(id)
     .update({

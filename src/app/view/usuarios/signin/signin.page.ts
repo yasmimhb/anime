@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UtilService } from 'src/app/common/util.service';
 import { AuthService } from 'src/app/model/services/auth.service';
@@ -10,73 +10,71 @@ import { AuthService } from 'src/app/model/services/auth.service';
   styleUrls: ['./signin.page.scss'],
 })
 export class SigninPage implements OnInit {
-  formLogar : FormGroup;
+  formLogar: FormGroup;
 
-  constructor(private router: Router, private authService: AuthService, private formBuilder: FormBuilder, private utilService: UtilService) {
-    this.formLogar = new FormGroup({
-      email: new FormControl, 
-      senha: new FormControl
-    })
-  }
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private formBuilder: FormBuilder,
+    private utilService: UtilService
+  ) {}
 
-  get errorControl(){
+  get errorControl() {
     return this.formLogar.controls;
   }
 
-  submitForm(): boolean{
-    if(!this.formLogar.valid){
+  async submitForm(): Promise<boolean> {
+    if (!this.formLogar.valid) {
       this.utilService.presentAlert("Erro", "Erro ao preencher os campos!");
       return false;
-    }else{
+    } else {
       this.utilService.simpleLoader();
-      this.logar();
-      return true;
+      try {
+        await this.logar();
+        return true;
+      } catch (error) {
+        console.log(error);
+        return false;
+      }
     }
   }
 
-  private logar(){
-    this.authService.signIn(this.formLogar.value['email'], this.formLogar.value['senha'])
-    .then((res)=>{
-      //setTimeout(() => {
+  private logar() {
+    return this.authService.signIn(this.formLogar.value['email'], this.formLogar.value['senha'])
+      .then((res) => {
         this.utilService.dismissLoader();
-        this.utilService.presentAlert("Olá", "Seja bem vindo!");
+        this.utilService.presentAlert("Olá", "Seja bem-vindo!");
         this.router.navigate(["home"]);
-      //}, 500);
-    })
-    .catch((error)=>{
-      this.utilService.dismissLoader();
-      this.utilService.presentAlert("Login", "Erro ao logar");
-      console.log(error.message);
-    })
+      })
+      .catch((error) => {
+        this.utilService.dismissLoader();
+        this.utilService.presentAlert("Login", "Erro ao logar");
+        console.log(error.message);
+        throw error;
+      });
   }
 
-  logarComGoogle(): void{
-    this.authService.signInWithGoogle().then((res)=>{
-      setTimeout(() => {
-        this.utilService.presentAlert("Olá", "Seja bem vindo!");
-        this.router.navigate(["home"]);
-      }, 500);
+  logarComGoogle(): void {
+    this.authService.signInWithGoogle().then((res) => {
+      this.utilService.presentAlert("Olá", "Seja bem-vindo!");
+      this.router.navigate(["home"]);
     })
-    .catch((error)=>{
+    .catch((error) => {
       this.utilService.presentAlert("Login", "Erro ao logar");
       console.log(error.message);
-    })
+    });
   }
 
-  logarComGithub(): void{
-    this.authService.signInWithGithub().then((res)=>{
-      setTimeout(() => {
-        this.utilService.presentAlert("Olá", "Seja bem vindo!");
-        this.router.navigate(["home"]);
-      }, 500);
+  logarComGithub(): void {
+    this.authService.signInWithGithub().then((res) => {
+      this.utilService.presentAlert("Olá", "Seja bem-vindo!");
+      this.router.navigate(["home"]);
     })
-    .catch((error)=>{
-      this.utilService.presentAlert("Login", "Erro ao logar");
-      console.log(error.message);
-    })
+    .catch((error) => {
+    });
   }
 
-  irParaSignUp(){
+  irParaSignUp() {
     this.router.navigate(["signup"]);
   }
 
@@ -84,7 +82,6 @@ export class SigninPage implements OnInit {
     this.formLogar = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
       senha: ['', [Validators.required, Validators.minLength(6)]]
-    })
+    });
   }
-
 }

@@ -1,66 +1,68 @@
+// auth.service.ts
 import { Injectable, NgZone } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { FirebaseService } from './firebase.service';
 import { Router } from '@angular/router';
-import { getAuth, signInWithPopup, browserPopupRedirectResolver, GoogleAuthProvider, GithubAuthProvider} from 'firebase/auth';
+import { GoogleAuthProvider, GithubAuthProvider } from '@angular/fire/auth';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  usuarioDados : any;
+  usuarioDados: any;
 
-  constructor(private firebase : FirebaseService, private fireAuth: AngularFireAuth, private router: Router, private ngZone: NgZone) {
-    this.fireAuth.authState.subscribe(user=>{
-      if(user){
+  constructor(
+    private firebase: FirebaseService,
+    private fireAuth: AngularFireAuth,
+    private router: Router,
+    private ngZone: NgZone
+  ) {
+    this.fireAuth.authState.subscribe(user => {
+      if (user) {
         this.usuarioDados = user;
         localStorage.setItem('user', JSON.stringify(this.usuarioDados));
-      }else{
+      } else {
         localStorage.setItem('user', 'null');
       }
     });
   }
 
-  public signIn(email: string, password: string){
+  public signIn(email: string, password: string) {
     return this.fireAuth.signInWithEmailAndPassword(email, password);
   }
 
-  public signUpWithEmailPassword(email: string, password: string){
+  public signUpWithEmailPassword(email: string, password: string) {
     return this.fireAuth.createUserWithEmailAndPassword(email, password);
   }
 
-  public recoverPassword(email:string){
+  public recoverPassword(email: string) {
     return this.fireAuth.sendPasswordResetEmail(email);
   }
 
-  public signOut(){
-    return this.fireAuth.signOut().then(()=>{localStorage.removeItem('user'); 
-    this.router.navigate(['signIn']);});
+  public signOut() {
+    return this.fireAuth.signOut().then(() => {
+      localStorage.removeItem('user');
+      this.router.navigate(['signIn']);
+    });
   }
 
-  public getUserLogged(){
-    const user : any = JSON.parse(localStorage.getItem('user') || 'null');
-    if(user != null){
-      return user;
-    }else{
-      return null;
-    }
+  public getUserLogged() {
+    const user: any = JSON.parse(localStorage.getItem('user') || 'null');
+    return user !== null ? user : null;
   }
 
-  public isLoggedIn() : boolean{
-    const user : any = JSON.parse(localStorage.getItem('user') || 'null');
-    return(user!==null) ? true : false;
+  public isLoggedIn(): boolean {
+    const user: any = JSON.parse(localStorage.getItem('user') || 'null');
+    return user !== null;
   }
 
-  public signInWithGoogle(){
+  public signInWithGoogle() {
     const provider = new GoogleAuthProvider();
-    const auth = getAuth();
-    return signInWithPopup(auth, provider, browserPopupRedirectResolver);
+    return this.fireAuth.signInWithPopup(provider);
   }
 
-  public signInWithGithub(){
+  public signInWithGithub() {
     const provider = new GithubAuthProvider();
-    const auth = getAuth();
-    return signInWithPopup(auth, provider, browserPopupRedirectResolver);
+    return this.fireAuth.signInWithPopup(provider);
   }
 }
